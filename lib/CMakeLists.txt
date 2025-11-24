@@ -66,6 +66,11 @@ else(WIN32)#Unix
   list(APPEND IMGUI_LIBRARIES GL)
 endif(WIN32)
 
+find_package(Vulkan REQUIRED)
+list(APPEND IMGUI_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../cwrappers/imgui/backends/imgui_impl_vulkan.cpp)
+list(APPEND IMGUI_LIBRARIES ${Vulkan_LIBRARIES})
+
+
 if(IMGUI_FREETYPE)
 	FIND_PACKAGE(freetype REQUIRED PATHS ${FREETYPE_PATH})
 	list(APPEND IMGUI_LIBRARIES freetype)
@@ -87,6 +92,7 @@ endif (WIN32)
 
 target_compile_definitions(cimgui PUBLIC IMGUI_IMPL_API=extern\t\"C\"\t)
 
+target_include_directories(cimgui PUBLIC ${Vulkan_INCLUDE_DIRS})
 target_include_directories(cimgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../cwrappers/)
 target_include_directories(cimgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../cwrappers/imgui)
 target_include_directories(cimgui PUBLIC ${GLFW3_INCLUDE_DIR})
