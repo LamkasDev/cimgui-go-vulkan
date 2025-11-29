@@ -19,7 +19,7 @@ import (
 	"image"
 	"unsafe"
 
-	"github.com/AllenDang/cimgui-go/imgui"
+	"github.com/elokore/cimgui-go-vulkan/imgui"
 	glfw "github.com/go-gl/glfw/v3.4/glfw"
 	as "github.com/vulkan-go/asche"
 	vk "github.com/vulkan-go/vulkan"

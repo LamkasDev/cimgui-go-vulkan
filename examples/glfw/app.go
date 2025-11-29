@@ -7,9 +7,9 @@ import (
 
 	as "github.com/vulkan-go/asche"
 
-	"github.com/AllenDang/cimgui-go/backend"
-	glfwvulkanbackend "github.com/AllenDang/cimgui-go/backend/glfwvulkan-backend"
-	"github.com/AllenDang/cimgui-go/imgui"
+	"github.com/elokore/cimgui-go-vulkan/backend"
+	glfwvulkanbackend "github.com/elokore/cimgui-go-vulkan/backend/glfwvulkan-backend"
+	"github.com/elokore/cimgui-go-vulkan/imgui"
 	"github.com/go-gl/glfw/v3.4/glfw"
 	vk "github.com/vulkan-go/vulkan"
 	"github.com/xlab/closer"

@@ -1,5 +1,5 @@
 {
-        "PackagePath": "github.com/AllenDang/cimgui-go",
+        "PackagePath": "github.com/elokore/cimgui-go-vulkan",
         "ReverseMode": true,
         "SkipFuncs": [
                 "ImGui_ImplSDL2_*"

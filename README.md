@@ -1,7 +1,7 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/AllenDang/cimgui-go)](https://goreportcard.com/report/github.com/AllenDang/cimgui-go)
-![Build Status](https://github.com/AllenDang/cimgui-go/actions/workflows/test.yaml/badge.svg)
-![Linter Status](https://github.com/AllenDang/cimgui-go/actions/workflows/golangci-lint.yaml/badge.svg)
-[![GoDoc](https://pkg.go.dev/badge/github.com/AllenDang/cimgui-go?utm_source=godoc)](https://pkg.go.dev/mod/github.com/AllenDang/cimgui-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/elokore/cimgui-go-vulkan)](https://goreportcard.com/report/github.com/elokore/cimgui-go-vulkan)
+![Build Status](https://github.com/elokore/cimgui-go-vulkan/actions/workflows/test.yaml/badge.svg)
+![Linter Status](https://github.com/elokore/cimgui-go-vulkan/actions/workflows/golangci-lint.yaml/badge.svg)
+[![GoDoc](https://pkg.go.dev/badge/github.com/elokore/cimgui-go-vulkan?utm_source=godoc)](https://pkg.go.dev/mod/github.com/elokore/cimgui-go-vulkan)
 [![Mentioned in Awesome Go](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go#gui)
 
 # cimgui-go 
@@ -15,7 +15,7 @@ It works on macOS(arm64/x86), windows(x64), Arch Linux (Gnome/KDE) and Fedora Wo
 > [!note]
 > It is a known issue that newer versions of cimgui-go does not compile on some older linux distributions (e.g. Debian).
 > This is caused by shared libraries being compiled with GitHub Actions version of Ubuntu ([check out this table for the exact Ubunt version](https://docs.github.com/en/actions/how-tos/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories)) and not being compatible with older versions of glibc.
-> Track [#157](https://github.com/AllenDang/cimgui-go/issues/157).
+> Track [#157](https://github.com/elokore/cimgui-go-vulkan/issues/157).
 
 ## Setup
 
@@ -48,7 +48,7 @@ To see more details about usage of a specific backend, take a look at the [examp
 We support the following backends:
 - [GLFW](./examples/glfw). (GLFW 3.3 + OpenGL)
 - [SDL2](./examples/sdl). (SDL 2 + OpenGL)
-- [Ebitengine](./examples/ebiten) (`import "github.com/AllenDang/cimgui-go/backend/ebitenbackend"`).
+- [Ebitengine](./examples/ebiten) (`import "github.com/elokore/cimgui-go-vulkan/backend/ebitenbackend"`).
 
 > [!important]
 > Remember that various solution use different C libraries that can conflict with each other.
@@ -83,7 +83,7 @@ Our code defaults to pointers, but you can easily convert your slice to a pointe
 
 Please note that at the moment (June 2025) go (1.24) does not support passing annonymous functions to C via CGO.
 We have a workaround - pre-generating large amount of global functions and a pool.
-For details see https://github.com/AllenDang/cimgui-go/issues/224.
+For details see https://github.com/elokore/cimgui-go-vulkan/issues/224.
 Just be aware of the limitation that you may run out of pre-generated pool and experience a crash.
 
 ## Function coverage
