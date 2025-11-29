@@ -1,4 +1,4 @@
-module github.com/AllenDang/cimgui-go
+module github.com/elokore/cimgui-go-vulkan
 
 go 1.24.0
 
