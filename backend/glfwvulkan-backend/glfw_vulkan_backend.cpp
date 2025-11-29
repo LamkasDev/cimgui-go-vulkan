@@ -199,7 +199,6 @@ void igAttachToExistingWindow(GLFWwindow* window, VkInstance instance, VkDevice 
   VkQueue graphics_queue, VkPipelineCache pipeline_cache, uint32_t graphics_queue_family, VkImageView image_views[],
   VkImage swapchain_imgs[], VkFormat swapchain_format, uint32_t swapchain_image_count, int width, int height) {
   
-  
   igCreateContext(0);
   
   ImGuiIO *io = igGetIO_Nil();
@@ -329,7 +328,7 @@ GLFWwindow *igCreateGLFWWindow(const char *title, int width, int height,
 
 void igRefresh() { glfwPostEmptyEvent(); }
 
-void glfw_render(GLFWwindow *window, int image_index) {
+void igNewFrameManual(GLFWwindow *window, int image_index) {
   VkCommandBuffer command_buffer = command_buffers[image_index];
   VkFence fence = fences[image_index];
 
@@ -350,8 +349,12 @@ void glfw_render(GLFWwindow *window, int image_index) {
   ImGui_ImplVulkan_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   igNewFrame();
+}
 
-  // Rendering
+void igRenderFrameManual(GLFWwindow *window, int image_index) {
+  VkCommandBuffer command_buffer = command_buffers[image_index];
+  VkFence fence = fences[image_index];
+
   igRender();
   ImDrawData* draw_data = igGetDrawData();
 

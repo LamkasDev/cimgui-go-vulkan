@@ -20,7 +20,7 @@ import (
 	"github.com/AllenDang/cimgui-go/backend"
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/AllenDang/cimgui-go/internal"
-	glfw "github.com/go-gl/glfw/v3.3/glfw"
+	glfw "github.com/go-gl/glfw/v3.4/glfw"
 	as "github.com/vulkan-go/asche"
 	vk "github.com/vulkan-go/vulkan"
 )
@@ -210,6 +210,7 @@ type GLFWVulkanBackend struct {
 	keyCb                backend.KeyCallback
 	sizeCb               backend.SizeChangeCallback
 	window               uintptr
+	AttachedWindow       *glfw.Window
 }
 
 func NewGLFWBackend() *GLFWVulkanBackend {
@@ -396,6 +397,8 @@ func (b *GLFWVulkanBackend) AttachToExistingWindow(window *glfw.Window, instance
 	//dataField := v.FieldByName("data")
 	//cGlfwWindow := unsafe.Pointer(dataField.Pointer())
 
+	b.AttachedWindow = window
+
 	C.igAttachToExistingWindow(
 		(*C.GLFWwindow)(window.Handle()),
 		(C.VkInstance)(unsafe.Pointer(instance)),
@@ -410,6 +413,20 @@ func (b *GLFWVulkanBackend) AttachToExistingWindow(window *glfw.Window, instance
 		C.uint32_t(swapchainImageCount),
 		C.int(width),
 		C.int(height),
+	)
+}
+
+func (b *GLFWVulkanBackend) NewFrame(imageIndex int) {
+	C.igNewFrameManual(
+		(*C.GLFWwindow)(b.AttachedWindow.Handle()),
+		C.int(imageIndex),
+	)
+}
+
+func (b *GLFWVulkanBackend) RenderFrame(imageIndex int) {
+	C.igRenderFrameManual(
+		(*C.GLFWwindow)(b.AttachedWindow.Handle()),
+		C.int(imageIndex),
 	)
 }
 

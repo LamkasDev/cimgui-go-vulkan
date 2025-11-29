@@ -9,7 +9,7 @@ require (
 	github.com/ebitengine/hideconsole v1.0.0 // indirect
 	github.com/ebitengine/purego v0.9.0 // indirect
 	github.com/go-gl/glfw v0.0.0-20250301202403-da16c1255728 // indirect
-	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20250301202403-da16c1255728 // indirect
+	github.com/go-gl/glfw/v3.4/glfw v0.0.0-00010101000000-000000000000 // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
 	github.com/vulkan-go/asche v0.0.0-20190912134304-d4b318b67e07 // indirect
 	github.com/vulkan-go/vulkan v0.0.0-20221209234627-c0a353ae26c8 // indirect
@@ -18,3 +18,5 @@ require (
 	golang.org/x/sync v0.17.0 // indirect
 	golang.org/x/sys v0.36.0 // indirect
 )
+
+replace github.com/go-gl/glfw/v3.4/glfw => github.com/Geo25rey/glfw/v3.4/glfw v0.0.0-20240506152258-7c42c6194dae

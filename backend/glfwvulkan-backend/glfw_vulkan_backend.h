@@ -207,6 +207,8 @@ extern void igAttachToExistingWindow(GLFWwindow* window, VkInstance instance, Vk
         VkImage swapchain_imgs[], VkFormat swapchain_format, uint32_t swapchain_image_count, int width, int height);
 extern void igGLFWRunLoop(GLFWwindow *window, VoidCallback loop, VoidCallback beforeRender, VoidCallback afterRender,
                       VoidCallback beforeDestroyContext);
+extern void igNewFrameManual(GLFWwindow *window, int image_index);
+extern void igRenderFrameManual(GLFWwindow *window, int image_index);
 extern void igGLFWWindow_GetDisplaySize(GLFWwindow *window, int *width, int *height);
 extern void igGLFWWindow_GetContentScale(GLFWwindow *window, float *width, float *height);
 extern void igGLFWWindow_SetWindowPos(GLFWwindow *window, int x, int y);

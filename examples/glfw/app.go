@@ -9,10 +9,19 @@ import (
 
 	"github.com/AllenDang/cimgui-go/backend"
 	glfwvulkanbackend "github.com/AllenDang/cimgui-go/backend/glfwvulkan-backend"
-	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/AllenDang/cimgui-go/imgui"
+	"github.com/go-gl/glfw/v3.4/glfw"
 	vk "github.com/vulkan-go/vulkan"
 	"github.com/xlab/closer"
 )
+
+type Depth struct {
+	format   vk.Format
+	image    vk.Image
+	memAlloc *vk.MemoryAllocateInfo
+	mem      vk.DeviceMemory
+	view     vk.ImageView
+}
 
 type Application struct {
 	as.BaseVulkanApp
@@ -20,10 +29,22 @@ type Application struct {
 	WindowHandle  *glfw.Window
 	Width         uint32
 	Height        uint32
+	RenderPass    vk.RenderPass
+	Depth         *Depth
 }
 
-var isDebugMode bool = false
+var DepthFormat vk.Format = vk.FormatD16Unorm
+var isDebugMode bool = true
 var currentBackend backend.Backend[glfwvulkanbackend.GLFWWindowFlags]
+
+func OrPanic(err error, finalizers ...func()) {
+	if err != nil {
+		for _, fn := range finalizers {
+			fn()
+		}
+		panic(err)
+	}
+}
 
 func runApplication() error {
 	// Initialize GLFW and Vulkan
@@ -56,7 +77,10 @@ func runApplication() error {
 		fmt.Println(err)
 		return err
 	}
-	println("Platform")
+
+	app.prepareDepth()
+	app.prepareRenderPass()
+	app.prepareFramebuffers()
 
 	// Initialize and run
 	dim := app.Context().SwapchainDimensions()
@@ -80,7 +104,7 @@ func runApplication() error {
 		app.PipelineCache,
 		app.Context().Platform().GraphicsQueueFamilyIndex(),
 		app.Context().SwapchainImageResources(),
-		app.VulkanSwapchainDimensions(),
+		app.Context().SwapchainDimensions(),
 	)
 
 	println("Created")
@@ -234,6 +258,12 @@ func runMainLoop(app *Application, window *glfw.Window, platform as.Platform, fr
 				log.Printf("Failed to acquire next image: (idx: %v, outdated: %v)", imageIdx, outdated)
 			}
 
+			currentBackend.NewFrame(imageIdx)
+			imgui.Begin("TestFrame")
+			imgui.End()
+			currentBackend.RenderFrame(imageIdx)
+			imgui.UpdatePlatformWindows()
+
 			_, err = app.Context().PresentImage(imageIdx)
 			if err != nil {
 				panic(err)
@@ -284,4 +314,128 @@ func (app *Application) VulkanInstanceExtensions() []string {
 		extensions = append(extensions, "VK_EXT_debug_report")
 	}
 	return extensions
+}
+
+func (app *Application) prepareFramebuffers() {
+	dev := app.Context().Device()
+	swapchainImageResources := app.Context().SwapchainImageResources()
+
+	for _, res := range swapchainImageResources {
+		var fb vk.Framebuffer
+
+		ret := vk.CreateFramebuffer(dev, &vk.FramebufferCreateInfo{
+			SType:           vk.StructureTypeFramebufferCreateInfo,
+			RenderPass:      app.RenderPass,
+			AttachmentCount: 2,
+			PAttachments:    []vk.ImageView{res.View(), app.Depth.view},
+			Width:           app.Width,
+			Height:          app.Height,
+			Layers:          1,
+		}, nil, &fb)
+		OrPanic(as.NewError(ret))
+
+		res.SetFramebuffer(fb)
+	}
+}
+
+func (app *Application) prepareRenderPass() {
+	dev := app.Context().Device()
+	var renderPass vk.RenderPass
+	ret := vk.CreateRenderPass(dev, &vk.RenderPassCreateInfo{
+		SType:           vk.StructureTypeRenderPassCreateInfo,
+		AttachmentCount: 2,
+		PAttachments: []vk.AttachmentDescription{{
+			Format:         app.Context().SwapchainDimensions().Format,
+			Samples:        vk.SampleCount1Bit,
+			LoadOp:         vk.AttachmentLoadOpClear,
+			StoreOp:        vk.AttachmentStoreOpStore,
+			StencilLoadOp:  vk.AttachmentLoadOpDontCare,
+			StencilStoreOp: vk.AttachmentStoreOpDontCare,
+			InitialLayout:  vk.ImageLayoutUndefined,
+			FinalLayout:    vk.ImageLayoutPresentSrc,
+		}, {
+			Format:         app.Depth.format,
+			Samples:        vk.SampleCount1Bit,
+			LoadOp:         vk.AttachmentLoadOpClear,
+			StoreOp:        vk.AttachmentStoreOpDontCare,
+			StencilLoadOp:  vk.AttachmentLoadOpDontCare,
+			StencilStoreOp: vk.AttachmentStoreOpDontCare,
+			InitialLayout:  vk.ImageLayoutUndefined,
+			FinalLayout:    vk.ImageLayoutDepthStencilAttachmentOptimal,
+		}},
+		SubpassCount: 1,
+		PSubpasses: []vk.SubpassDescription{{
+			PipelineBindPoint:    vk.PipelineBindPointGraphics,
+			ColorAttachmentCount: 1,
+			PColorAttachments: []vk.AttachmentReference{{
+				Attachment: 0,
+				Layout:     vk.ImageLayoutColorAttachmentOptimal,
+			}},
+			PDepthStencilAttachment: &vk.AttachmentReference{
+				Attachment: 1,
+				Layout:     vk.ImageLayoutDepthStencilAttachmentOptimal,
+			},
+		}},
+	}, nil, &renderPass)
+	OrPanic(as.NewError(ret))
+	app.RenderPass = renderPass
+}
+
+func (app *Application) prepareDepth() {
+	dev := app.Context().Device()
+	app.Depth = &Depth{
+		format: DepthFormat,
+	}
+	ret := vk.CreateImage(dev, &vk.ImageCreateInfo{
+		SType:     vk.StructureTypeImageCreateInfo,
+		ImageType: vk.ImageType2d,
+		Format:    DepthFormat,
+		Extent: vk.Extent3D{
+			Width:  app.Width,
+			Height: app.Height,
+			Depth:  1,
+		},
+		MipLevels:   1,
+		ArrayLayers: 1,
+		Samples:     vk.SampleCount1Bit,
+		Tiling:      vk.ImageTilingOptimal,
+		Usage:       vk.ImageUsageFlags(vk.ImageUsageDepthStencilAttachmentBit),
+	}, nil, &app.Depth.image)
+	OrPanic(as.NewError(ret))
+
+	var memReqs vk.MemoryRequirements
+	vk.GetImageMemoryRequirements(dev, app.Depth.image, &memReqs)
+	memReqs.Deref()
+
+	memProps := app.Context().Platform().MemoryProperties()
+	memTypeIndex, _ := as.FindRequiredMemoryTypeFallback(memProps,
+		vk.MemoryPropertyFlagBits(memReqs.MemoryTypeBits), vk.MemoryPropertyDeviceLocalBit)
+	app.Depth.memAlloc = &vk.MemoryAllocateInfo{
+		SType:           vk.StructureTypeMemoryAllocateInfo,
+		AllocationSize:  memReqs.Size,
+		MemoryTypeIndex: memTypeIndex,
+	}
+
+	var mem vk.DeviceMemory
+	ret = vk.AllocateMemory(dev, app.Depth.memAlloc, nil, &mem)
+	OrPanic(as.NewError(ret))
+	app.Depth.mem = mem
+
+	ret = vk.BindImageMemory(dev, app.Depth.image, app.Depth.mem, 0)
+	OrPanic(as.NewError(ret))
+
+	var view vk.ImageView
+	ret = vk.CreateImageView(dev, &vk.ImageViewCreateInfo{
+		SType:  vk.StructureTypeImageViewCreateInfo,
+		Format: DepthFormat,
+		SubresourceRange: vk.ImageSubresourceRange{
+			AspectMask: vk.ImageAspectFlags(vk.ImageAspectDepthBit),
+			LevelCount: 1,
+			LayerCount: 1,
+		},
+		ViewType: vk.ImageViewType2d,
+		Image:    app.Depth.image,
+	}, nil, &view)
+	OrPanic(as.NewError(ret))
+	app.Depth.view = view
 }
