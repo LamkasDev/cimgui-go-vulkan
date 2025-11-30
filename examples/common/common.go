@@ -7,16 +7,16 @@ import (
 	"fmt"
 	"image"
 
-	cte "github.com/AllenDang/cimgui-go/ImGuiColorTextEdit"
-	"github.com/AllenDang/cimgui-go/backend"
-	"github.com/AllenDang/cimgui-go/imgui"
-	"github.com/AllenDang/cimgui-go/imguizmo"
-	_ "github.com/AllenDang/cimgui-go/imguizmo"
-	_ "github.com/AllenDang/cimgui-go/immarkdown"
-	_ "github.com/AllenDang/cimgui-go/imnodes"
-	_ "github.com/AllenDang/cimgui-go/impl/opengl3"
-	"github.com/AllenDang/cimgui-go/implot"
-	"github.com/AllenDang/cimgui-go/utils"
+	cte "github.com/elokore/cimgui-go-vulkan/ImGuiColorTextEdit"
+	"github.com/elokore/cimgui-go-vulkanulkan/backend"
+	"github.com/elokore/cimgui-go-vulkanulkan/imgui"
+	"github.com/elokore/cimgui-go-vulkanulkan/imguizmo"
+	_ "github.com/elokore/cimgui-go-vulkanulkan/imguizmo"
+	_ "github.com/elokore/cimgui-go-vulkanulkan/immarkdown"
+	_ "github.com/elokore/cimgui-go-vulkanulkan/imnodes"
+	_ "github.com/elokore/cimgui-go-vulkanulkan/impl/opengl3"
+	"github.com/elokore/cimgui-go-vulkanulkan/implot"
+	"github.com/elokore/cimgui-go-vulkanulkan/utils"
 )
 
 var (

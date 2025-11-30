@@ -5,8 +5,8 @@ import (
 	"image/color"
 	"unsafe"
 
-	"github.com/AllenDang/cimgui-go/backend"
-	"github.com/AllenDang/cimgui-go/imgui"
+	"github.com/elokore/cimgui-go-vulkan/backend"
+	"github.com/elokore/cimgui-go-vulkanulkan/imgui"
 	"github.com/go-gl/glfw/v3.4/glfw"
 	"github.com/hajimehoshi/ebiten/v2"
 	as "github.com/vulkan-go/asche"
