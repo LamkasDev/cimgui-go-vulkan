@@ -137,7 +137,7 @@ package immarkdown
 // extern void callbackMarkdownTooltipCallback30(MarkdownTooltipCallbackData);
 // extern void callbackMarkdownTooltipCallback31(MarkdownTooltipCallbackData);
 import "C"
-import "github.com/elokore/cimgui-go-vulkanulkan/internal"
+import "github.com/elokore/cimgui-go-vulkan/internal"
 
 type (
 	MarkdownFormalCallback  func(markdownFormatInfo_ *MarkdownFormatInfo, start_ bool)

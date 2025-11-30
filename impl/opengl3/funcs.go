@@ -4,8 +4,8 @@
 package opengl3
 
 import (
-	"github.com/elokore/cimgui-go-vulkanulkan/imgui"
-	"github.com/elokore/cimgui-go-vulkanulkan/internal"
+	"github.com/elokore/cimgui-go-vulkan/imgui"
+	"github.com/elokore/cimgui-go-vulkan/internal"
 )
 
 // #include "structs_accessor.h"

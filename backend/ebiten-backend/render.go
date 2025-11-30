@@ -6,7 +6,7 @@ import (
 	"unsafe"
 
 	"github.com/elokore/cimgui-go-vulkan/backend/ebiten-backend/internal/native"
-	"github.com/elokore/cimgui-go-vulkanulkan/imgui"
+	"github.com/elokore/cimgui-go-vulkan/imgui"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 

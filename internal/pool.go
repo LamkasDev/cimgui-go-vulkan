@@ -58,7 +58,7 @@ func (p *Pool[GoCallback, CCallback]) Find(callback CCallback) GoCallback {
 
 This means that you attempt to Find source function of type %T, but the function given as an argument to Find was either
 allocated in a different way (not by this Pool) or was deallocated somehow.
-Refer: https://github.com/elokore/cimgui-go-vulkanulkan/issues/224
+Refer: https://github.com/elokore/cimgui-go-vulkan/issues/224
 `, callback))
 }
 

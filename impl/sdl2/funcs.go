@@ -7,7 +7,7 @@ package sdl2
 // #include "wrapper.h"
 // #include "../../imgui/extra_types.h"
 import "C"
-import "github.com/elokore/cimgui-go-vulkanulkan/internal"
+import "github.com/elokore/cimgui-go-vulkan/internal"
 
 func ContentScaleForDisplay(display_index int32) float32 {
 	return float32(C.ImGui_ImplSDL2_GetContentScaleForDisplay(C.int(display_index)))

@@ -9,7 +9,7 @@ package imguizmo
 // #include "typedefs.h"
 // #include "../imgui/extra_types.h"
 import "C"
-import "github.com/elokore/cimgui-go-vulkanulkan/internal"
+import "github.com/elokore/cimgui-go-vulkan/internal"
 
 type Style struct {
 	CData *C.Style

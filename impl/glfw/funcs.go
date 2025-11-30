@@ -7,7 +7,7 @@ package glfw
 // #include "wrapper.h"
 // #include "../../imgui/extra_types.h"
 import "C"
-import "github.com/elokore/cimgui-go-vulkanulkan/internal"
+import "github.com/elokore/cimgui-go-vulkan/internal"
 
 func CharCallback(window *GLFWwindow, c uint32) {
 	windowArg, windowFin := window.Handle()

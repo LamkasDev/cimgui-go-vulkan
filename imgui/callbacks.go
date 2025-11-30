@@ -204,7 +204,7 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/elokore/cimgui-go-vulkanulkan/internal"
+	"github.com/elokore/cimgui-go-vulkan/internal"
 )
 
 type (

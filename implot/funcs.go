@@ -6,9 +6,9 @@ package implot
 import (
 	"unsafe"
 
-	"github.com/elokore/cimgui-go-vulkanulkan/imgui"
-	"github.com/elokore/cimgui-go-vulkanulkan/internal"
-	"github.com/elokore/cimgui-go-vulkanulkan/utils/vectors"
+	"github.com/elokore/cimgui-go-vulkan/imgui"
+	"github.com/elokore/cimgui-go-vulkan/internal"
+	"github.com/elokore/cimgui-go-vulkan/utils/vectors"
 )
 
 // #include "structs_accessor.h"

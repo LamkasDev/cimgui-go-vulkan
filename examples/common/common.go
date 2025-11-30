@@ -8,15 +8,15 @@ import (
 	"image"
 
 	cte "github.com/elokore/cimgui-go-vulkan/ImGuiColorTextEdit"
-	"github.com/elokore/cimgui-go-vulkanulkan/backend"
-	"github.com/elokore/cimgui-go-vulkanulkan/imgui"
-	"github.com/elokore/cimgui-go-vulkanulkan/imguizmo"
-	_ "github.com/elokore/cimgui-go-vulkanulkan/imguizmo"
-	_ "github.com/elokore/cimgui-go-vulkanulkan/immarkdown"
-	_ "github.com/elokore/cimgui-go-vulkanulkan/imnodes"
-	_ "github.com/elokore/cimgui-go-vulkanulkan/impl/opengl3"
-	"github.com/elokore/cimgui-go-vulkanulkan/implot"
-	"github.com/elokore/cimgui-go-vulkanulkan/utils"
+	"github.com/elokore/cimgui-go-vulkan/backend"
+	"github.com/elokore/cimgui-go-vulkan/imgui"
+	"github.com/elokore/cimgui-go-vulkan/imguizmo"
+	_ "github.com/elokore/cimgui-go-vulkan/imguizmo"
+	_ "github.com/elokore/cimgui-go-vulkan/immarkdown"
+	_ "github.com/elokore/cimgui-go-vulkan/imnodes"
+	_ "github.com/elokore/cimgui-go-vulkan/impl/opengl3"
+	"github.com/elokore/cimgui-go-vulkan/implot"
+	"github.com/elokore/cimgui-go-vulkan/utils"
 )
 
 var (

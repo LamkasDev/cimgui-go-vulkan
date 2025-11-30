@@ -6,7 +6,7 @@ import (
 	"unsafe"
 
 	"github.com/elokore/cimgui-go-vulkan/backend"
-	"github.com/elokore/cimgui-go-vulkanulkan/imgui"
+	"github.com/elokore/cimgui-go-vulkan/imgui"
 	"github.com/go-gl/glfw/v3.4/glfw"
 	"github.com/hajimehoshi/ebiten/v2"
 	as "github.com/vulkan-go/asche"

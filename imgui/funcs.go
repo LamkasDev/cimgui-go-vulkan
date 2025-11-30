@@ -10,8 +10,8 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/elokore/cimgui-go-vulkanulkan/internal"
-	"github.com/elokore/cimgui-go-vulkanulkan/utils/vectors"
+	"github.com/elokore/cimgui-go-vulkan/internal"
+	"github.com/elokore/cimgui-go-vulkan/utils/vectors"
 )
 
 func (self *BitVector) InternalClear() {
