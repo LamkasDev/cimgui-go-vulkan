@@ -1,7 +1,7 @@
 package glfwvulkanbackend
 
 // #cgo CPPFLAGS: -DCIMGUI_GO_USE_GLFW
-// #cgo amd64,linux LDFLAGS: -lvulkan -lglfw
+// #cgo amd64,linux LDFLAGS: -lvulkan -lglfw -lX11
 // #cgo windows LDFLAGS: -lvulkan-1
 // #cgo darwin LDFLAGS: -framework Vulkan -framework Metal -framework QuartzCore
 // #cgo !gles2,darwin LDFLAGS: -framework OpenGL
