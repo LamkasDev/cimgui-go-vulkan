@@ -15,5 +15,5 @@ This package contains several sub-packages. Use only thes that you need.
 
 > [!warning]
 > Code from here **does not** link against any shared object. This means that simply importing e.g. `glfw` imgui impl, will cause linker crash.
-> Use this along with any glfw wrapper library such as `backend/glfwbackend` or `go-gl/glfw`.
+> Use this along with any glfw wrapper library such as `backend/glfwbackend` or `elokore/glfw`.
 

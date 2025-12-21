@@ -8,7 +8,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/AllenDang/cimgui-go/internal"
+	"github.com/elokore/cimgui-go-vulkan/internal"
 )
 
 var _ internal.WrappableType[C.ImPlotPoint, *PlotPoint] = &PlotPoint{}

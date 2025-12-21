@@ -20,7 +20,7 @@ import (
 	"github.com/elokore/cimgui-go-vulkan/backend"
 	"github.com/elokore/cimgui-go-vulkan/imgui"
 	"github.com/elokore/cimgui-go-vulkan/internal"
-	glfw "github.com/go-gl/glfw/v3.4/glfw"
+	glfw "github.com/elokore/glfw/v3.4/glfw"
 	as "github.com/vulkan-go/asche"
 	vk "github.com/vulkan-go/vulkan"
 )
@@ -474,7 +474,7 @@ func (b *GLFWVulkanBackend) SetWindowFlags(flag GLFWWindowFlags, value int) {
 }
 
 // SetIcons sets icons for the window.
-// THIS CODE COMES FROM https://github.com/go-gl/glfw (BSD-3 clause) - Copyright (c) 2012 The glfw3-go Authors. All rights reserved.
+// THIS CODE COMES FROM https://github.com/elokore/glfw (BSD-3 clause) - Copyright (c) 2012 The glfw3-go Authors. All rights reserved.
 func (b *GLFWVulkanBackend) SetIcons(images ...image.Image) {
 	count := len(images)
 	cimages := make([]C.CImage, count)

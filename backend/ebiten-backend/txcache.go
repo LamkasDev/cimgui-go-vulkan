@@ -4,7 +4,7 @@ import (
 	"log"
 	"unsafe"
 
-	"github.com/AllenDang/cimgui-go/imgui"
+	"github.com/elokore/cimgui-go-vulkan/imgui"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
