@@ -196,8 +196,8 @@ bool createFrameBuffers(VkDevice device, std::vector<VkImageView> image_views, i
 }
 
 void igAttachToExistingWindow(GLFWwindow* window, VkInstance instance, VkDevice device, VkPhysicalDevice physical_device,
-  VkQueue graphics_queue, VkPipelineCache pipeline_cache, uint32_t graphics_queue_family, VkImageView image_views[],
-  VkImage swapchain_imgs[], VkFormat swapchain_format, uint32_t swapchain_image_count, int width, int height) {
+  VkQueue graphics_queue, VkPipelineCache pipeline_cache, uint32_t graphics_queue_family, void** image_views,
+  void** swapchain_imgs, VkFormat swapchain_format, uint32_t swapchain_image_count, int width, int height) {
   
   igCreateContext(0);
   
@@ -214,12 +214,16 @@ void igAttachToExistingWindow(GLFWwindow* window, VkInstance instance, VkDevice 
   io->IniFilename = "";
 
   ImGui_ImplGlfw_InitForVulkan(window, true);
-    
-  int swapchain_img_count = sizeof(swapchain_images) / sizeof(VkImage);
-  swapchain_images.assign(swapchain_imgs, swapchain_imgs + swapchain_img_count);
+  
+  std::vector<VkImageView> views(swapchain_image_count);
+  std::vector<VkImage> images(swapchain_image_count);
 
-  std::vector<VkImageView> views;
-  views.assign(image_views, image_views + swapchain_img_count);
+  for (int i = 0; i < swapchain_image_count; i++) {
+    views[i] = static_cast<VkImageView>(image_views[i]);
+    images[i] = static_cast<VkImage>(swapchain_imgs[i]);
+  }
+
+  swapchain_images = images;
 
   current_device = device;
   current_graphics_queue = graphics_queue;

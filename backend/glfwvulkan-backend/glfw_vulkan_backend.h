@@ -203,8 +203,8 @@ void glfw_render(GLFWwindow *window, int image_index);
 extern GLFWwindow *igCreateGLFWWindow(const char *title, int width, int height,
                                       VoidCallback afterCreateContext);
 extern void igAttachToExistingWindow(GLFWwindow* window, VkInstance instance, VkDevice device, VkPhysicalDevice physical_device,
-        VkQueue graphics_queue, VkPipelineCache pipeline_cache, uint32_t graphics_queue_family, VkImageView image_views[],
-        VkImage swapchain_imgs[], VkFormat swapchain_format, uint32_t swapchain_image_count, int width, int height);
+        VkQueue graphics_queue, VkPipelineCache pipeline_cache, uint32_t graphics_queue_family, void** image_views,
+        void** swapchain_imgs, VkFormat swapchain_format, uint32_t swapchain_image_count, int width, int height);
 extern void igGLFWRunLoop(GLFWwindow *window, VoidCallback loop, VoidCallback beforeRender, VoidCallback afterRender,
                       VoidCallback beforeDestroyContext);
 extern void igNewFrameManual(GLFWwindow *window, int image_index);

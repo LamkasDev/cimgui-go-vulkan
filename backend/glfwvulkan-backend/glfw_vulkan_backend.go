@@ -388,14 +388,8 @@ func (b *GLFWVulkanBackend) AttachToExistingWindow(window *glfw.Window, instance
 		cSwapchainImages[i] = (*C.void)(swapchainImages[i])
 	}
 
-	// C array of image views
-	// imageViewsArray := (*unsafe.Pointer)(unsafe.Pointer(&cImageViews[0]))
-	// swapchainImagesArray := (*unsafe.Pointer)(unsafe.Pointer(&cSwapchainImages[0]))
-
-	// The actual C glfw window handle is hidden as a private member of glfw.Window, use reflection to retrieve it
-	//v := reflect.ValueOf(window).Elem()
-	//dataField := v.FieldByName("data")
-	//cGlfwWindow := unsafe.Pointer(dataField.Pointer())
+	imageViewsArray := (*unsafe.Pointer)(unsafe.Pointer(&cImageViews[0]))
+	swapchainImagesArray := (*unsafe.Pointer)(unsafe.Pointer(&cSwapchainImages[0]))
 
 	b.AttachedWindow = window
 
@@ -407,8 +401,8 @@ func (b *GLFWVulkanBackend) AttachToExistingWindow(window *glfw.Window, instance
 		(C.VkQueue)(unsafe.Pointer(graphics_queue)),
 		(C.VkPipelineCache)(unsafe.Pointer(pipeline_cache)),
 		C.uint32_t(graphics_queue_family),
-		(*C.VkImageView)(unsafe.Pointer(&imageViews[0])),
-		(*C.VkImage)(unsafe.Pointer(&swapchainImages[0])),
+		imageViewsArray,
+		swapchainImagesArray,
 		C.VkFormat(swapchainFormat),
 		C.uint32_t(swapchainImageCount),
 		C.int(width),
