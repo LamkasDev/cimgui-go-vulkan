@@ -238,6 +238,7 @@ func runMainLoop(app *Application, window *glfw.Window, platform as.Platform, fr
 	for {
 		select {
 		case <-exitC:
+			currentBackend.Cleanup()
 			platform.Destroy()
 			window.Destroy()
 			glfw.Terminate()

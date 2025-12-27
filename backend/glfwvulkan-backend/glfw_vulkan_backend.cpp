@@ -46,6 +46,7 @@ std::vector<VkFramebuffer> framebuffers;
 std::vector<VkCommandBuffer> command_buffers;
 std::vector<VkImage> swapchain_images;
 std::vector<VkFence> fences;
+ImGuiContext* imguiContext;
 
 extern "C" {
 
@@ -199,7 +200,7 @@ void igAttachToExistingWindow(GLFWwindow* window, VkInstance instance, VkDevice 
   VkQueue graphics_queue, VkPipelineCache pipeline_cache, uint32_t graphics_queue_family, void** image_views,
   void** swapchain_imgs, VkFormat swapchain_format, uint32_t swapchain_image_count, int width, int height) {
   
-  igCreateContext(0);
+  imguiContext = igCreateContext(0);
   
   ImGuiIO *io = igGetIO_Nil();
   io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
@@ -277,6 +278,39 @@ void igAttachToExistingWindow(GLFWwindow* window, VkInstance instance, VkDevice 
     init_info.CheckVkResultFn = nullptr;
 
   ImGui_ImplVulkan_Init(&init_info);
+}
+
+void igCleanup() {
+  vkDeviceWaitIdle(current_device);
+  vkWaitForFences(current_device, fences.size(), fences.data(), VK_TRUE, UINT64_MAX);
+
+  ImGui_ImplVulkan_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  igDestroyContext(imguiContext);
+  imguiContext = nullptr;
+
+  for (int i = 0; i < fences.size(); i++) {
+    vkDestroyFence(current_device, fences[i], nullptr);
+    fences[i] = VK_NULL_HANDLE;
+  }
+  fences.clear();
+
+  vkDestroyCommandPool(current_device, command_pool, nullptr);
+  command_buffers.clear();
+
+  for (int i = 0; i < framebuffers.size(); i++) {
+    vkDestroyFramebuffer(current_device, framebuffers[i], nullptr);
+    framebuffers[i] = VK_NULL_HANDLE;
+  }
+  framebuffers.clear();
+
+  vkDestroyRenderPass(current_device, render_pass, nullptr);
+  render_pass = VK_NULL_HANDLE;
+
+  vkDestroyDescriptorPool(current_device, descriptor_pool, nullptr);
+  descriptor_pool = VK_NULL_HANDLE;
+
+  printf("cimgui-go cleanup complete!\n");
 }
 
 GLFWwindow *igCreateGLFWWindow(const char *title, int width, int height,

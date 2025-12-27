@@ -180,6 +180,7 @@ type Backend[BackendFlagsT ~int] interface {
 		graphics_queue vk.Queue, pipeline_cache vk.PipelineCache, graphics_queue_family uint32, swapchainImageResources []*as.SwapchainImageResources, swapchainDimensions *as.SwapchainDimensions)
 	NewFrame(imageIndex int)
 	RenderFrame(imageIndex int)
+	Cleanup()
 
 	TextureManager
 }

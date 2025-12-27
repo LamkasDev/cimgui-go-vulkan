@@ -410,6 +410,10 @@ func (b *GLFWVulkanBackend) AttachToExistingWindow(window *glfw.Window, instance
 	)
 }
 
+func (b *GLFWVulkanBackend) Cleanup() {
+	C.igCleanup()
+}
+
 func (b *GLFWVulkanBackend) NewFrame(imageIndex int) {
 	C.igNewFrameManual(
 		(*C.GLFWwindow)(b.AttachedWindow.Handle()),
