@@ -1,5 +1,6 @@
 package glfwvulkanbackend
 
+// #cgo CFLAGS: -fsigned-char
 // #cgo CPPFLAGS: -DCIMGUI_DEFINE_ENUMS_AND_STRUCTS -I${SRCDIR}/../../cwrappers/imgui -I${SRCDIR}/../../cwrappers/imgui/backends
 // #cgo CXXFLAGS: -std=c++11 -Wno-changes-meaning -Wno-invalid-conversion -fpermissive
 // #cgo linux CXXFLAGS: -Wno-changes-meaning -Wno-invalid-conversion -fpermissive
