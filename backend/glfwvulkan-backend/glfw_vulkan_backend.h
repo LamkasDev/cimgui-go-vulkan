@@ -225,6 +225,7 @@ extern void igGLFWWindow_SetIcon(GLFWwindow *window, int count, CImage* images);
 extern void igGLFWInitHint(GLFWInitHint hint, int value);
 extern void igRefresh();
 extern void igCleanup();
+extern ImTextureID igAddVulkanTexture(VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
 extern ImTextureID igCreateTexture(unsigned char *pixels, int width, int height);
 extern void igDeleteTexture(ImTextureID id);
 extern void igWindowHint(GLFWWindowFlags hint, int value);

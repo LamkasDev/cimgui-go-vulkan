@@ -437,6 +437,11 @@ func (b *GLFWVulkanBackend) Refresh() {
 	C.igRefresh()
 }
 
+func (b *GLFWVulkanBackend) CreateVulkanTexture(sampler vk.Sampler, image_view vk.ImageView, image_layout vk.ImageLayout) imgui.TextureRef {
+	tex := C.igAddVulkanTexture((C.VkSampler)(unsafe.Pointer(sampler)), (C.VkImageView)(unsafe.Pointer(image_view)), (C.VkImageLayout)(image_layout));
+	return *imgui.NewTextureRefTextureID(*imgui.NewTextureIDFromC(&tex))
+}
+
 func (b *GLFWVulkanBackend) CreateTexture(pixels unsafe.Pointer, width, height int) imgui.TextureRef {
 	tex := C.igCreateTexture((*C.uchar)(pixels), C.int(width), C.int(height))
 	return *imgui.NewTextureRefTextureID(*imgui.NewTextureIDFromC(&tex))

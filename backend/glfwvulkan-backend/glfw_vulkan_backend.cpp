@@ -15,6 +15,7 @@
 #include <iostream>
 #include <vector>
 #include <iterator>
+#include <cstring>
 
 // #include "../../cwrappers/imgui/backends/imgui_impl_glfw.cpp"
 //#include "../../cwrappers/imgui/backends/imgui_impl_vulkan.cpp"
@@ -38,6 +39,7 @@ int extra_frame_count = MAX_EXTRA_FRAME_COUNT;
 
 ImVec4 clear_color = *ImVec4_ImVec4_Float(0.45, 0.55, 0.6, 1.0);
 VkDevice current_device;
+VkPhysicalDevice current_physical_device = VK_NULL_HANDLE;
 VkDescriptorPool descriptor_pool;
 VkRenderPass render_pass;
 VkCommandPool command_pool;
@@ -47,6 +49,7 @@ std::vector<VkCommandBuffer> command_buffers;
 std::vector<VkImage> swapchain_images;
 std::vector<VkFence> fences;
 ImGuiContext* imguiContext;
+VkSampler g_TextureSampler = VK_NULL_HANDLE;
 
 extern "C" {
 
@@ -227,6 +230,7 @@ void igAttachToExistingWindow(GLFWwindow* window, VkInstance instance, VkDevice 
   swapchain_images = images;
 
   current_device = device;
+  current_physical_device = physical_device;
   current_graphics_queue = graphics_queue;
 
   createRenderPass(device, swapchain_format);
@@ -309,6 +313,11 @@ void igCleanup() {
 
   vkDestroyDescriptorPool(current_device, descriptor_pool, nullptr);
   descriptor_pool = VK_NULL_HANDLE;
+
+  if (g_TextureSampler != VK_NULL_HANDLE) {
+    vkDestroySampler(current_device, g_TextureSampler, nullptr);
+    g_TextureSampler = VK_NULL_HANDLE;
+  }
 
   printf("cimgui-go cleanup complete!\n");
 }
@@ -513,21 +522,173 @@ void igGLFWRunLoop(GLFWwindow *window, VoidCallback loop, VoidCallback beforeRen
   return;
 }
 
-ImTextureID igCreateTexture(unsigned char *pixels, int width, int height) {
-  // GLint last_texture;
-  // GLuint texId;
+uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+{
+  VkPhysicalDeviceMemoryProperties memProps;
+  vkGetPhysicalDeviceMemoryProperties(current_physical_device, &memProps);
 
-  // glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
-  // glGenTextures(1, &texId);
-  // glBindTexture(GL_TEXTURE_2D, texId);
-  // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+  for (uint32_t i = 0; i < memProps.memoryTypeCount; i++) {
+    if ((typeFilter & (1 << i)) && (memProps.memoryTypes[i].propertyFlags & properties) == properties) {
+      return i;
+    }
+  }
+  return 0; // fallback - will likely crash later if wrong
+}
 
-  // // Restore state
-  // glBindTexture(GL_TEXTURE_2D, last_texture);
+ImTextureID igAddVulkanTexture(VkSampler sampler, VkImageView image_view, VkImageLayout image_layout) {
+  return ImGui_ImplVulkan_AddTexture(sampler, image_view, image_layout);
+}
 
-  return ImTextureID();
+ImTextureID igCreateTexture(unsigned char *pixels, int width, int height)
+{
+  if (!pixels || width <= 0 || height <= 0)
+    return (ImTextureID)0;
+
+  // Create sampler once
+  if (g_TextureSampler == VK_NULL_HANDLE)
+  {
+    VkSamplerCreateInfo samplerInfo = {VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
+    samplerInfo.magFilter = VK_FILTER_LINEAR;
+    samplerInfo.minFilter = VK_FILTER_LINEAR;
+    samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    samplerInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
+    vkCreateSampler(current_device, &samplerInfo, nullptr, &g_TextureSampler);
+  }
+
+  VkDeviceSize imageSize = (VkDeviceSize)width * height * 4;
+
+  // 1. Staging buffer
+  VkBuffer stagingBuffer;
+  VkDeviceMemory stagingMemory;
+
+  VkBufferCreateInfo bufferInfo = {VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO};
+  bufferInfo.size = imageSize;
+  bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+  bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+  vkCreateBuffer(current_device, &bufferInfo, nullptr, &stagingBuffer);
+
+  VkMemoryRequirements memReqs;
+  vkGetBufferMemoryRequirements(current_device, stagingBuffer, &memReqs);
+
+  VkMemoryAllocateInfo allocInfo = {VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO};
+  allocInfo.allocationSize = memReqs.size;
+  allocInfo.memoryTypeIndex = findMemoryType(memReqs.memoryTypeBits,
+                                             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+  vkAllocateMemory(current_device, &allocInfo, nullptr, &stagingMemory);
+  vkBindBufferMemory(current_device, stagingBuffer, stagingMemory, 0);
+
+  void* data;
+  vkMapMemory(current_device, stagingMemory, 0, imageSize, 0, &data);
+  memcpy(data, pixels, imageSize);
+  vkUnmapMemory(current_device, stagingMemory);
+
+  // 2. Target image
+  VkImage image;
+  VkDeviceMemory imageMemory;
+  VkImageView imageView;
+
+  VkImageCreateInfo imageInfo = {VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO};
+  imageInfo.imageType = VK_IMAGE_TYPE_2D;
+  imageInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
+  imageInfo.extent = {(uint32_t)width, (uint32_t)height, 1};
+  imageInfo.mipLevels = 1;
+  imageInfo.arrayLayers = 1;
+  imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+  imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+  imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+  imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+  vkCreateImage(current_device, &imageInfo, nullptr, &image);
+
+  vkGetImageMemoryRequirements(current_device, image, &memReqs);
+  allocInfo.allocationSize = memReqs.size;
+  allocInfo.memoryTypeIndex = findMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+  vkAllocateMemory(current_device, &allocInfo, nullptr, &imageMemory);
+  vkBindImageMemory(current_device, image, imageMemory, 0);
+
+  // 3. Image view
+  VkImageViewCreateInfo viewInfo = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
+  viewInfo.image = image;
+  viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+  viewInfo.format = VK_FORMAT_R8G8B8A8_UNORM;
+  viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+  viewInfo.subresourceRange.levelCount = 1;
+  viewInfo.subresourceRange.layerCount = 1;
+  vkCreateImageView(current_device, &viewInfo, nullptr, &imageView);
+
+  // 4. Copy staging -> image (this is the part that was missing)
+  // We need a command buffer for the copy. For simplicity we use a one-time command buffer.
+
+  VkCommandBufferAllocateInfo cmdAllocInfo = {VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
+  cmdAllocInfo.commandPool = command_pool;
+  cmdAllocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+  cmdAllocInfo.commandBufferCount = 1;
+
+  VkCommandBuffer cmdBuffer;
+  vkAllocateCommandBuffers(current_device, &cmdAllocInfo, &cmdBuffer);
+
+  VkCommandBufferBeginInfo beginInfo = {VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
+  beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+  vkBeginCommandBuffer(cmdBuffer, &beginInfo);
+
+  // Transition image to transfer dst
+  VkImageMemoryBarrier barrier = {VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER};
+  barrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+  barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+  barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+  barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+  barrier.image = image;
+  barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+  barrier.subresourceRange.levelCount = 1;
+  barrier.subresourceRange.layerCount = 1;
+  vkCmdPipelineBarrier(cmdBuffer,
+                       VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
+                       0, 0, nullptr, 0, nullptr, 1, &barrier);
+
+  // Copy buffer to image
+  VkBufferImageCopy region = {};
+  region.bufferOffset = 0;
+  region.bufferRowLength = 0;
+  region.bufferImageHeight = 0;
+  region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+  region.imageSubresource.mipLevel = 0;
+  region.imageSubresource.baseArrayLayer = 0;
+  region.imageSubresource.layerCount = 1;
+  region.imageOffset = {0, 0, 0};
+  region.imageExtent = {(uint32_t)width, (uint32_t)height, 1};
+
+  vkCmdCopyBufferToImage(cmdBuffer, stagingBuffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+  // Transition to shader read only
+  barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+  barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+  barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+  barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+  vkCmdPipelineBarrier(cmdBuffer,
+                       VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+                       0, 0, nullptr, 0, nullptr, 1, &barrier);
+
+  vkEndCommandBuffer(cmdBuffer);
+
+  // Submit
+  VkSubmitInfo submitInfo = {VK_STRUCTURE_TYPE_SUBMIT_INFO};
+  submitInfo.commandBufferCount = 1;
+  submitInfo.pCommandBuffers = &cmdBuffer;
+  vkQueueSubmit(current_graphics_queue, 1, &submitInfo, VK_NULL_HANDLE);
+  vkQueueWaitIdle(current_graphics_queue);   // simple sync for now
+
+  vkFreeCommandBuffers(current_device, command_pool, 1, &cmdBuffer);
+
+  // Cleanup staging
+  vkDestroyBuffer(current_device, stagingBuffer, nullptr);
+  vkFreeMemory(current_device, stagingMemory, nullptr);
+
+  // Register with ImGui
+  return ImGui_ImplVulkan_AddTexture(g_TextureSampler, imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 }
 
 void igDeleteTexture(ImTextureID id) {

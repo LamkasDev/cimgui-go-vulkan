@@ -111,6 +111,7 @@ CIMGUI_API void ImGui_ImplVulkan_Shutdown();
 CIMGUI_API void ImGui_ImplVulkan_NewFrame();
 CIMGUI_API void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer command_buffer, VkPipeline pipeline = VK_NULL_HANDLE);
 CIMGUI_API void ImGui_ImplVulkan_SetMinImageCount(uint32_t min_image_count);
+CIMGUI_API ImTextureID ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView image_view, VkImageLayout image_layout);
 #endif
 
 #ifdef CIMGUI_USE_SDL2
