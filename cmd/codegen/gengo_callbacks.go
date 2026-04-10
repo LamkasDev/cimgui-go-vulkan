@@ -78,7 +78,7 @@ func GenerateCallbacks(callbacks []CIdentifier, context *Context) (validTypes []
 // - includes logging
 // - returns CallbackNotGeneratedError
 func (g *callbacksGenerator) writeCallback(typedefName CIdentifier, def string) error {
-	// see https://github.com/elokore/cimgui-go-vulkan/issues/224#issuecomment-2452156237
+	// see https://github.com/LamkasDev/cimgui-go-vulkan/issues/224#issuecomment-2452156237
 	// 1: preprocessing - parse typedefs.data[k] to get return type and arguments
 
 	// now let me use a bit of regex.

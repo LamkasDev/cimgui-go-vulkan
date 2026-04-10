@@ -1,12 +1,12 @@
-module github.com/elokore/cimgui-go-vulkan
+module github.com/LamkasDev/cimgui-go-vulkan
 
 go 1.24.0
 
 require (
 	github.com/elokore/glfw/v3.4/glfw v0.0.0-20251221231958-c1dc85df2170
 	github.com/hajimehoshi/ebiten/v2 v2.9.2
-	github.com/vulkan-go/asche v0.0.0-20190912134304-d4b318b67e07
-	github.com/vulkan-go/vulkan v0.0.0-20221209234627-c0a353ae26c8
+	github.com/LamkasDev/asche v0.0.0-20260410205515-16e8d4e35541
+	github.com/goki/vulkan v1.0.8
 	github.com/xlab/closer v1.1.0
 )
 

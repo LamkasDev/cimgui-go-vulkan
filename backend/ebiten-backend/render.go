@@ -5,8 +5,8 @@ import (
 	"image"
 	"unsafe"
 
-	"github.com/elokore/cimgui-go-vulkan/backend/ebiten-backend/internal/native"
-	"github.com/elokore/cimgui-go-vulkan/imgui"
+	"github.com/LamkasDev/cimgui-go-vulkan/backend/ebiten-backend/internal/native"
+	"github.com/LamkasDev/cimgui-go-vulkan/imgui"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 

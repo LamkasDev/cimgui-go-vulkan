@@ -19,10 +19,10 @@ import (
 	"image"
 	"unsafe"
 
-	"github.com/elokore/cimgui-go-vulkan/imgui"
+	"github.com/LamkasDev/cimgui-go-vulkan/imgui"
 	glfw "github.com/elokore/glfw/v3.4/glfw"
-	as "github.com/vulkan-go/asche"
-	vk "github.com/vulkan-go/vulkan"
+	as "github.com/LamkasDev/asche"
+	vk "github.com/goki/vulkan"
 )
 
 type voidCallbackFunc func()

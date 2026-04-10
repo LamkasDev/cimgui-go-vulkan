@@ -1,7 +1,7 @@
 package ebitenbackend
 
 import (
-	"github.com/elokore/cimgui-go-vulkan/imgui"
+	"github.com/LamkasDev/cimgui-go-vulkan/imgui"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )

@@ -5,12 +5,12 @@ import (
 	"image/color"
 	"unsafe"
 
-	"github.com/elokore/cimgui-go-vulkan/backend"
-	"github.com/elokore/cimgui-go-vulkan/imgui"
+	"github.com/LamkasDev/cimgui-go-vulkan/backend"
+	"github.com/LamkasDev/cimgui-go-vulkan/imgui"
 	"github.com/elokore/glfw/v3.4/glfw"
 	"github.com/hajimehoshi/ebiten/v2"
-	as "github.com/vulkan-go/asche"
-	vk "github.com/vulkan-go/vulkan"
+	as "github.com/LamkasDev/asche"
+	vk "github.com/goki/vulkan"
 )
 
 func (b *EbitenBackend) SetAfterCreateContextHook(fn func()) {

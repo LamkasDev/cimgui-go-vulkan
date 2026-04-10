@@ -4,5 +4,5 @@
 package imgui
 
 import (
-	_ "github.com/elokore/cimgui-go-vulkan"
+	_ "github.com/LamkasDev/cimgui-go-vulkan"
 )

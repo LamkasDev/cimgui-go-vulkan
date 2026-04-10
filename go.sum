@@ -12,10 +12,10 @@ github.com/hajimehoshi/ebiten/v2 v2.9.2 h1:fV9Wh8dL4gSV62s/oygCIckEJ2MPpJRaUiwj6
 github.com/hajimehoshi/ebiten/v2 v2.9.2/go.mod h1:DAt4tnkYYpCvu3x9i1X/nK/vOruNXIlYq/tBXxnhrXM=
 github.com/jezek/xgb v1.1.1 h1:bE/r8ZZtSv7l9gk6nU0mYx51aXrvnyb44892TwSaqS4=
 github.com/jezek/xgb v1.1.1/go.mod h1:nrhwO0FX/enq75I7Y7G8iN1ubpSGZEiA3v9e9GyRFlk=
-github.com/vulkan-go/asche v0.0.0-20190912134304-d4b318b67e07 h1:QIXP1nx5b+YZt1cKDP5SR/89tRXrLxWslBBFBvH/+Y0=
-github.com/vulkan-go/asche v0.0.0-20190912134304-d4b318b67e07/go.mod h1:fIbNY6YffQRtdF22h26OXRprI/BGOWPKlxJWtNC78OA=
-github.com/vulkan-go/vulkan v0.0.0-20221209234627-c0a353ae26c8 h1:qPHDyQTLtn40kezY6y4UL7bH7Z0Im9wSu1tQtM2wbUU=
-github.com/vulkan-go/vulkan v0.0.0-20221209234627-c0a353ae26c8/go.mod h1:Y5Ti1uUBdKDsb0W8aPtIo9krs+29Y7p6Bc9yyy4AM6g=
+github.com/LamkasDev/asche v0.0.0-20190912134304-d4b318b67e07 h1:QIXP1nx5b+YZt1cKDP5SR/89tRXrLxWslBBFBvH/+Y0=
+github.com/LamkasDev/asche v0.0.0-20190912134304-d4b318b67e07/go.mod h1:fIbNY6YffQRtdF22h26OXRprI/BGOWPKlxJWtNC78OA=
+github.com/goki/vulkan v0.0.0-20221209234627-c0a353ae26c8 h1:qPHDyQTLtn40kezY6y4UL7bH7Z0Im9wSu1tQtM2wbUU=
+github.com/goki/vulkan v0.0.0-20221209234627-c0a353ae26c8/go.mod h1:Y5Ti1uUBdKDsb0W8aPtIo9krs+29Y7p6Bc9yyy4AM6g=
 github.com/xlab/closer v1.1.0 h1:yrDiOXjd/B7pZ3lZkl/EZ1gWrR2M2N5XpBnixynm4mc=
 github.com/xlab/closer v1.1.0/go.mod h1:Ff8YcUPbn5jju6nClrMCmJHQABM0S/obEK0za/1yVMk=
 github.com/xlab/linmath v0.0.0-20220922225318-40b6290c3b40 h1:FmU7+0eD5GaZzxlbNxVMiC7th7/7qHtskrkWt0ltFkU=

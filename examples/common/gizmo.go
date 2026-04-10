@@ -2,8 +2,8 @@
 package common
 
 import (
-	"github.com/elokore/cimgui-go-vulkan/imgui"
-	"github.com/elokore/cimgui-go-vulkan/imguizmo"
+	"github.com/LamkasDev/cimgui-go-vulkan/imgui"
+	"github.com/LamkasDev/cimgui-go-vulkan/imguizmo"
 )
 
 var (

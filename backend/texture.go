@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/elokore/cimgui-go-vulkan/imgui"
+	"github.com/LamkasDev/cimgui-go-vulkan/imgui"
 )
 
 // Texture implements a simple texture loader. It wraps backend's methods to allow creating textures easily.

@@ -85,11 +85,11 @@ signal arrived during cgo execution
 goroutine 1 gp=0xc000002380 m=0 mp=0x8f0880 [syscall, locked to thread]:
 runtime.cgocall(0x50ce00, 0xc00002fc10)
 	/usr/local/go/src/runtime/cgocall.go:167 +0x4b fp=0xc00002fbe8 sp=0xc00002fbb0 pc=0x473f2b
-github.com/elokore/cimgui-go-vulkan/backend/glfwvulkan-backend._Cfunc_igRenderFrameManual(0xad2ea10, 0x3)
+github.com/LamkasDev/cimgui-go-vulkan/backend/glfwvulkan-backend._Cfunc_igRenderFrameManual(0xad2ea10, 0x3)
 	_cgo_gotypes.go:668 +0x3e fp=0xc00002fc10 sp=0xc00002fbe8 pc=0x50757e
-github.com/elokore/cimgui-go-vulkan/backend/glfwvulkan-backend.(*GLFWVulkanBackend).RenderFrame.func1(...)
+github.com/LamkasDev/cimgui-go-vulkan/backend/glfwvulkan-backend.(*GLFWVulkanBackend).RenderFrame.func1(...)
 	/home/weston/cimgui-go-vulkan/backend/glfwvulkan-backend/glfw_vulkan_backend.go:430
-github.com/elokore/cimgui-go-vulkan/backend/glfwvulkan-backend.(*GLFWVulkanBackend).RenderFrame(0x70e57f?, 0x3)
+github.com/LamkasDev/cimgui-go-vulkan/backend/glfwvulkan-backend.(*GLFWVulkanBackend).RenderFrame(0x70e57f?, 0x3)
 	/home/weston/cimgui-go-vulkan/backend/glfwvulkan-backend/glfw_vulkan_backend.go:430 +0x51 fp=0xc00002fc50 sp=0xc00002fc10 pc=0x507d51
 main.runMainLoop(0xc000202000, 0xc000158000, {0x741cd8, 0xc000196008}, 0xfe502a)
 	/home/weston/cimgui-go-vulkan/examples/glfw/app.go:264 +0x303 fp=0xc00002fd60 sp=0xc00002fc50 pc=0x50b083

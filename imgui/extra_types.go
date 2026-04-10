@@ -8,7 +8,7 @@ import (
 	"image/color"
 	"unsafe"
 
-	"github.com/elokore/cimgui-go-vulkan/internal"
+	"github.com/LamkasDev/cimgui-go-vulkan/internal"
 )
 
 type (

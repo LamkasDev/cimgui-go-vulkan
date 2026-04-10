@@ -1,5 +1,5 @@
 {
-        "PackagePath": "github.com/elokore/cimgui-go-vulkan",
+        "PackagePath": "github.com/LamkasDev/cimgui-go-vulkan",
         "ReverseMode": true,
         "SkipFuncs": [
                 "ImGui_ImplOpenGL3_*"

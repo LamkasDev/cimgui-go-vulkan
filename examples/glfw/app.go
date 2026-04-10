@@ -5,13 +5,13 @@ import (
 	"log"
 	"time"
 
-	as "github.com/vulkan-go/asche"
+	as "github.com/LamkasDev/asche"
 
-	"github.com/elokore/cimgui-go-vulkan/backend"
-	glfwvulkanbackend "github.com/elokore/cimgui-go-vulkan/backend/glfwvulkan-backend"
-	"github.com/elokore/cimgui-go-vulkan/imgui"
+	"github.com/LamkasDev/cimgui-go-vulkan/backend"
+	glfwvulkanbackend "github.com/LamkasDev/cimgui-go-vulkan/backend/glfwvulkan-backend"
+	"github.com/LamkasDev/cimgui-go-vulkan/imgui"
 	"github.com/elokore/glfw/v3.4/glfw"
-	vk "github.com/vulkan-go/vulkan"
+	vk "github.com/goki/vulkan"
 	"github.com/xlab/closer"
 )
 

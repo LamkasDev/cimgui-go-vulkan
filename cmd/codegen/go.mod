@@ -1,4 +1,4 @@
-module github.com/elokore/cimgui-go-vulkan/cmd/codegen
+module github.com/LamkasDev/cimgui-go-vulkan/cmd/codegen
 
 go 1.22.0
 
