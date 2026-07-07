@@ -407,7 +407,7 @@ void igRenderFrameManual(GLFWwindow *window, int image_index) {
 
   VkImageMemoryBarrier barrier1 = {};
     barrier1.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    barrier1.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
+    barrier1.srcAccessMask = 0;
     barrier1.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
     barrier1.oldLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
     barrier1.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
@@ -439,8 +439,8 @@ void igRenderFrameManual(GLFWwindow *window, int image_index) {
 
   VkClearValue clear_values[1] = {};
     clear_values[0].color = {{0.0f, 0.0f, 0.0f, 0.0f}};  // Transparent
-    render_pass_begin_info.clearValueCount = 1;
-    render_pass_begin_info.pClearValues = clear_values;
+    render_pass_begin_info.clearValueCount = 0;
+    render_pass_begin_info.pClearValues = nullptr;
 
   vkCmdBeginRenderPass(command_buffer, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
   ImGui_ImplVulkan_RenderDrawData(draw_data, command_buffer); 

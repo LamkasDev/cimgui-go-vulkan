@@ -21,7 +21,6 @@ import (
 
 	"github.com/LamkasDev/cimgui-go-vulkan/imgui"
 	glfw "github.com/elokore/glfw/v3.4/glfw"
-	as "github.com/LamkasDev/asche"
 	vk "github.com/goki/vulkan"
 )
 
@@ -140,6 +139,69 @@ func dropCallback(wnd unsafe.Pointer, count C.int, names **C.char) {
 	currentBackend.DropCallback()(namesSlice)
 }
 
+// SwapchainDimensions describes the size and format of the swapchain.
+type SwapchainDimensions struct {
+	// Width of the swapchain.
+	Width uint32
+	// Height of the swapchain.
+	Height uint32
+	// Format is the pixel format of the swapchain.
+	Format vk.Format
+}
+
+type SwapchainImageResources struct {
+	Image                vk.Image
+	Cmd                  vk.CommandBuffer
+	GraphicsToPresentCmd vk.CommandBuffer
+
+	View          vk.ImageView
+	Framebuffer   vk.Framebuffer
+	DescriptorSet vk.DescriptorSet
+
+	UniformBuffer vk.Buffer
+	UniformMemory vk.DeviceMemory
+}
+
+func (s *SwapchainImageResources) Destroy(dev vk.Device, cmdPool ...vk.CommandPool) {
+	vk.DestroyFramebuffer(dev, s.Framebuffer, nil)
+	vk.DestroyImageView(dev, s.View, nil)
+	if len(cmdPool) > 0 {
+		vk.FreeCommandBuffers(dev, cmdPool[0], 1, []vk.CommandBuffer{
+			s.Cmd,
+		})
+	}
+	vk.DestroyBuffer(dev, s.UniformBuffer, nil)
+	vk.FreeMemory(dev, s.UniformMemory, nil)
+}
+
+func (s *SwapchainImageResources) SetImageOwnership(graphicsQueueFamilyIndex, presentQueueFamilyIndex uint32) {
+	vk.BeginCommandBuffer(s.GraphicsToPresentCmd, &vk.CommandBufferBeginInfo{
+		SType: vk.StructureTypeCommandBufferBeginInfo,
+		Flags: vk.CommandBufferUsageFlags(vk.CommandBufferUsageSimultaneousUseBit),
+	})
+
+	vk.CmdPipelineBarrier(s.GraphicsToPresentCmd,
+		vk.PipelineStageFlags(vk.PipelineStageColorAttachmentOutputBit),
+		vk.PipelineStageFlags(vk.PipelineStageColorAttachmentOutputBit),
+		0, 0, nil, 0, nil, 1, []vk.ImageMemoryBarrier{{
+			SType:               vk.StructureTypeImageMemoryBarrier,
+			DstAccessMask:       vk.AccessFlags(vk.AccessColorAttachmentWriteBit),
+			OldLayout:           vk.ImageLayoutPresentSrc,
+			NewLayout:           vk.ImageLayoutPresentSrc,
+			SrcQueueFamilyIndex: graphicsQueueFamilyIndex,
+			DstQueueFamilyIndex: presentQueueFamilyIndex,
+			Image:               s.Image,
+
+			SubresourceRange: vk.ImageSubresourceRange{
+				AspectMask: vk.ImageAspectFlags(vk.ImageAspectColorBit),
+				LevelCount: 1,
+				LayerCount: 1,
+			},
+		}})
+
+	vk.EndCommandBuffer(s.GraphicsToPresentCmd)
+}
+
 // Backend is a special interface that implements all methods required
 // to render imgui application.
 type Backend[BackendFlagsT ~int] interface {
@@ -177,7 +239,7 @@ type Backend[BackendFlagsT ~int] interface {
 
 	CreateWindow(title string, width, height int)
 	AttachToExistingWindow(window *glfw.Window, instance vk.Instance, device vk.Device, physical_device vk.PhysicalDevice,
-		graphics_queue vk.Queue, pipeline_cache vk.PipelineCache, graphics_queue_family uint32, swapchainImageResources []*as.SwapchainImageResources, swapchainDimensions *as.SwapchainDimensions)
+		graphics_queue vk.Queue, pipeline_cache vk.PipelineCache, graphics_queue_family uint32, swapchainImageRes []*SwapchainImageResources, swapchainDimensions *SwapchainDimensions)
 	NewFrame(imageIndex int)
 	RenderFrame(imageIndex int)
 	Cleanup()

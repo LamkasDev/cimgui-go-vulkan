@@ -22,7 +22,6 @@ import (
 	"github.com/LamkasDev/cimgui-go-vulkan/imgui"
 	"github.com/LamkasDev/cimgui-go-vulkan/internal"
 	glfw "github.com/elokore/glfw/v3.4/glfw"
-	as "github.com/LamkasDev/asche"
 	vk "github.com/goki/vulkan"
 )
 
@@ -365,7 +364,7 @@ func (b *GLFWVulkanBackend) CreateWindow(title string, width, height int) {
 }
 
 func (b *GLFWVulkanBackend) AttachToExistingWindow(window *glfw.Window, instance vk.Instance, device vk.Device, physical_device vk.PhysicalDevice,
-	graphics_queue vk.Queue, pipeline_cache vk.PipelineCache, graphics_queue_family uint32, swapchainImageResources []*as.SwapchainImageResources, swapchainDimensions *as.SwapchainDimensions) {
+	graphics_queue vk.Queue, pipeline_cache vk.PipelineCache, graphics_queue_family uint32, swapchainImageResources []*backend.SwapchainImageResources, swapchainDimensions *backend.SwapchainDimensions) {
 
 	swapchainImageCount := len(swapchainImageResources)
 	swapchainFormat := swapchainDimensions.Format
@@ -376,8 +375,8 @@ func (b *GLFWVulkanBackend) AttachToExistingWindow(window *glfw.Window, instance
 	swapchainImages := make([]unsafe.Pointer, swapchainImageCount)
 
 	for i, resource := range swapchainImageResources {
-		imageViews[i] = unsafe.Pointer(resource.View())
-		swapchainImages[i] = unsafe.Pointer(resource.Image())
+		imageViews[i] = unsafe.Pointer(resource.View)
+		swapchainImages[i] = unsafe.Pointer(resource.Image)
 	}
 
 	// Convert image views to be C compatible
@@ -438,7 +437,7 @@ func (b *GLFWVulkanBackend) Refresh() {
 }
 
 func (b *GLFWVulkanBackend) CreateVulkanTexture(sampler vk.Sampler, image_view vk.ImageView, image_layout vk.ImageLayout) imgui.TextureRef {
-	tex := C.igAddVulkanTexture((C.VkSampler)(unsafe.Pointer(sampler)), (C.VkImageView)(unsafe.Pointer(image_view)), (C.VkImageLayout)(image_layout));
+	tex := C.igAddVulkanTexture((C.VkSampler)(unsafe.Pointer(sampler)), (C.VkImageView)(unsafe.Pointer(image_view)), (C.VkImageLayout)(image_layout))
 	return *imgui.NewTextureRefTextureID(*imgui.NewTextureIDFromC(&tex))
 }
 
